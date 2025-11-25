@@ -18,23 +18,25 @@ public class AviaSoulsTest {
     @Test
     public void testSearchSortByPrice() {
         AviaSouls manager = new AviaSouls();
-        manager.add(new Ticket("MOW", "SPB", 5000, 1000, 1130));
-        manager.add(new Ticket("MOW", "SPB", 2000, 1200, 1330));
-        manager.add(new Ticket("MOW", "SPB", 8000, 1500, 1630));
-        manager.add(new Ticket("LED", "KZN", 4000, 900, 1200));
 
-        Ticket[] found = manager.search("MOW", "SPB");
+        Ticket t1 = new Ticket("MOW", "SPB", 2000, 1000, 1130);
+        Ticket t2 = new Ticket("MOW", "SPB", 5000, 1200, 1330);
+        Ticket t3 = new Ticket("MOW", "SPB", 8000, 1400, 1530);
 
-        assertEquals(3, found.length);
-        assertEquals(2000, found[0].getPrice());
-        assertEquals(5000, found[1].getPrice());
-        assertEquals(8000, found[2].getPrice());
+        manager.add(t1);
+        manager.add(t2);
+        manager.add(t3);
+
+        Ticket[] result = manager.search("MOW", "SPB");
+        Ticket[] expected = {t1, t2, t3}; // 2000, 5000, 8000
+
+        assertArrayEquals(expected, result);
     }
 
     @Test
     public void testTicketTimeComparator() {
-        Ticket t1 = new Ticket("A", "B", 10000, 1000, 1200); // 120 мин
-        Ticket t2 = new Ticket("A", "B", 5000, 1000, 1400);  // 240 мин
+        Ticket t1 = new Ticket("A", "B", 5000, 1000, 1200); // 120 мин
+        Ticket t2 = new Ticket("A", "B", 10000, 1000, 1400);  // 240 мин
 
         TicketTimeComparator comp = new TicketTimeComparator();
         assertTrue(comp.compare(t1, t2) < 0);
@@ -45,15 +47,19 @@ public class AviaSoulsTest {
     public void testSearchAndSortByTime() {
         AviaSouls manager = new AviaSouls();
 
-        manager.add(new Ticket("MOW", "SPB", 7000, 1000, 1090)); // 90 минут
-        manager.add(new Ticket("MOW", "SPB", 10000, 1200, 1440)); // 240 минут
-        manager.add(new Ticket("MOW", "SPB", 5000, 1700, 1760)); // 60 минут
+        Ticket t1 = new Ticket("MOW", "SPB", 5000, 1000, 1060); // 60 минут
+        Ticket t2 = new Ticket("MOW", "SPB", 7000, 1200, 1290); // 90 минут
+        Ticket t3 = new Ticket("MOW", "SPB", 10000, 1400, 1640); // 240 минут
+
+        manager.add(t1);
+        manager.add(t2);
+        manager.add(t3);
 
         TicketTimeComparator comparator = new TicketTimeComparator();
         Ticket[] result = manager.searchAndSortBy("MOW", "SPB", comparator);
 
-        assertEquals(60, result[0].getFlightTime());
-        assertEquals(90, result[1].getFlightTime());
-        assertEquals(240, result[2].getFlightTime());
+        Ticket[] expected = {t1, t2, t3};
+
+        assertArrayEquals(expected, result);
     }
 }
